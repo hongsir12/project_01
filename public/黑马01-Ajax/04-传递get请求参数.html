@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+</head>
+<body>
+<!--用户在第一个文本框中输入姓名，第二个文本框输入年龄，
+当用户点击提交按钮时，发送一个Ajax请求，
+并把用户输入的姓名和年龄作为请求参数传递到副武期端-->
+<p>
+    <input type="text" id="username">
+</p>
+<p>
+    <input type="text" id="age">
+</p>
+<p>
+    <input type="button" value="提交" id="btn">
+</p>
+<script>
+    var btn = document.getElementById('btn')
+    var username = document.getElementById('username')
+    var age = document.getElementById('age')
+    btn.onclick = function (){
+        // 创建Ajax对象
+        var xhr = new XMLHttpRequest()
+        // 获取用户在文本框中的值
+        var nameValue = username.value
+        var ageValue = age.value
+        // alert(nameValue)
+        // alert(ageValue)
+        // 拼接请求参数
+        var params = 'username='+nameValue+'&age=' + ageValue
+        // 配置Ajax对象
+        // get请求设置请求行时，要把参数列表拼接到url后面
+        xhr.open('get','http://localhost:3000/get?' + params)
+        // 设置请求体  get请求的请求体为空
+        xhr.send()
+        // 获取服务器端响应的数据
+        xhr.onload = function (){
+            console.log(xhr.responseText)
+        }
+    }
+</script>
+</body>
+</html>

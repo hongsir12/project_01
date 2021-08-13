@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+</head>
+<body>
+<button id="btn">点击发送Ajax请求</button>
+<script>
+    // 低版本IE浏览器缓存问题
+    var btn = document.getElementById('btn')
+    btn.onclick = function (){
+        var xhr = new XMLHttpRequest()
+        // 解决方案:在请求地址的后面加请求参数，保证每一次请求中的请求参数的值不相同
+        xhr.open('get','http://localhost:3000/cache?t='+Math.random())
+        xhr.send()
+        xhr.onreadystatechange = function (){
+            if (xhr.readyState==4&&xhr.status==200){
+                alert(xhr.responseText)
+            }
+        }
+    }
+</script>
+</body>
+</html>

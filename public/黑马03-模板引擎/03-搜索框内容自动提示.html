@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.0-beta3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container{
+            padding-top: 150px;
+        }
+        .list-group{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<!--获取搜索框并添加用户输入事件-->
+<!--获取用户输入的关键字-->
+<!--向服务器端发送请求并携带关键字作为请求参数-->
+<!--将响应数据显示在搜索框底部-->
+<div class="container">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="请输入搜索关键字" id="search">
+        <ul class="list-group" id="list-box">
+
+        </ul>
+    </div>
+</div>
+<script src="ajax.js"></script>
+<script src="template-web.js"></script>
+<script type="text/html" id="tpl">
+    {{each result}}
+    <li class="list-group-item">{{$value}}</li>
+    {{/each}}
+</script>
+<script>
+    // 获取搜索框
+var searchInp = document.getElementById('search')
+    // 获取提示文字的存放容器
+var listBox = document.getElementById('list-box')
+var timer = null
+    // 当用户在文本框中输入时触发
+searchInp.oninput = function (){
+    // 清除上一次开启的定时器
+    clearTimeout(timer)
+    // 获取用户输入内容
+    var keyWord = this.value
+    // 如果用户没有在搜索框中输入内容
+    if (keyWord.trim().length == 0){
+        listBox.style.display = 'none'
+        // 阻止程序向下执行
+        return
+    }
+    // 开启定时器让请求延时发送
+    timer = setTimeout(function (){
+        // 向服务器端发送请求
+        ajax({
+            type:'get',
+            url:'http://localhost:3000/searchAutoPrompt',
+            data:{
+                key:keyWord
+            },
+            success:function (result){
+                // 使用模板引擎拼接字符串
+                var html = template('tpl',{result:result})
+                // 将拼接好的字符串显示在页面中
+                listBox.innerHTML = html
+                listBox.style.display = 'block'
+            },
+            error:function (result){
+                console.log(result)
+            }
+        })
+    },800)
+
+
+}
+</script>
+</body>
+</html>

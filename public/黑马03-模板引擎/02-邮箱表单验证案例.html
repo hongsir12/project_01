@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.0-beta3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="template-web.js"></script>
+    <style>
+        p:not(:empty){
+            margin-top: 10px;
+            padding: 15px;
+        }
+        .container{
+            padding-top: 100px;
+        }
+    </style>
+</head>
+<body>
+<!--获取文本框并添加离开焦点事件；-->
+<!--离开焦点时检测输入邮箱是否符合规则；-->
+<!--如果不符合则组织程序向下执行并给出提示；-->
+<!--否则就向服务器端发送请求，检测邮箱是否被注册-->
+<!--根据服务器端返回值决定客户端显示何种提示信息-->
+<div class="container">
+    <div class="form-group">
+        <label>邮箱地址</label>
+        <input type="email" id="email" class="form-control" placeholder="请输入邮箱地址">
+    </div>
+<!--    错误bg-danger 正确bg-success-->
+    <p id="info"></p>
+</div>
+<script src="ajax.js"></script>
+<script>
+var emailInp = document.getElementById('email')
+var info = document.getElementById('info')
+emailInp.onblur = function (){
+    // 获取用户输入邮箱地址
+    var email = this.value
+    var reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
+    // 如果邮箱不符合规则
+    if (!reg.test(email)){
+        info.innerHTML = '请输入符合规则的邮箱'
+        info.className = 'bg-danger'
+        // 阻止程序向下执行
+        return
+    }
+    // 向服务器端发送请求
+    ajax({
+        type:'get',
+        url:'http://localhost:3000/verifyEmailAdress',
+        data:{
+            email:email
+        },
+        success:function (result){
+            console.log(result)
+            info.innerHTML = result.message
+            info.className = 'bg-success'
+        },
+        error:function (result){
+            console.log(result)
+            info.innerHTML = result.message
+            info.className = 'bg-danger'
+
+        }
+    })
+}
+</script>
+</body>
+</html>

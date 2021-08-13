@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.0-beta3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="ajax1.js"></script>
+    <style>
+        .container {
+            padding-top: 150px;
+        }
+        .d-box{
+           display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<!--通过接口获取省份信息-->
+<!--使用js获取到省市区下拉框元素-->
+<!--将服务器端返回的省份信息显示在下拉框中-->
+<!--为下拉框元素添加表单值改变事件-->
+<!--当用户选择省份时，根据省份id获取城市信息-->
+<!--当用户选择城市时，根据城市id获取县城信息-->
+<div class="container">
+    <div class="form-inline" style="float: left">
+        <div class="form-group d-box">
+            <select class="form-control" name="" id="province"></select>
+        </div>
+        <div class="form-group d-box">
+            <select class="form-control" name="" id="city">
+                <option value="">请选择城市</option>
+            </select>
+        </div>
+        <div class="form-group d-box">
+            <select class="form-control" name="" id="area">
+                <option value="">请选择县城</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+<script src="template-web.js"></script>
+<script src="../jquery.min.js"></script>
+<script type="text/html" id="provinceTpl">
+    <option value="">请选择省份</option>
+    {{each province}}
+    <option value="{{$value.pid}}">{{$value.provinceName}}</option>
+    {{/each}}
+</script>
+<script type="text/html" id="cityTpl">
+    <option value="">请选择城市</option>
+    {{each city}}
+    <option value="{{$value.id}}">{{$value.cityName}}</option>
+    {{/each}}
+</script>
+<script type="text/html" id='areaTpl'>
+    <option value="">请选择城区县城</option>
+    {{each area}}
+    <option value="{{$value.id}}">{{$value}}</option>
+    {{/each}}
+</script>
+<script>
+    // 获取省市区下拉框元素
+    var province = document.getElementById('province')
+    var city = document.getElementById('city')
+    var area = document.getElementById('area')
+    // 获取省份信息
+    ajax({
+        type: 'get',
+        url: 'http://localhost:3000/province',
+        success: function (data) {
+            // console.log(data)
+            // 将服务器端返回的数据和html进行拼接
+            var html = template('provinceTpl',{province:data})
+            // 将拼接好的html字符串显示在页面中
+            province.innerHTML = html
+            return
+        }
+    })
+    //为省份下拉框添加值改变事件
+    province.onchange = function (){
+        // 获取省份id
+        // console.log(this.value)
+        var pid = this.value
+        // 清空线程下拉框的数据
+        let html = template('areaTpl',{area:[]})
+        area.innerHTML = html
+        // 根据省份id获取城市信息
+        ajax({
+            type:'get',
+            url:'/cities',
+            data:{
+                pid:pid
+            },
+            success:function (data){
+                console.log(data)
+                var html = template('cityTpl',{city:data})
+                city.innerHTML = html
+            }
+        })
+    }
+    // 为城市下拉框添加值改变事件
+    city.onchange = function (){
+        // 获取城市id
+        var id = this.value
+        // 根据城市id获取区域城市信息
+        ajax({
+            url:'/areas',
+            data:{
+                id:id
+            },
+            success:function (data){
+                console.log(data)
+                var html = template('areaTpl',{area:data})
+                area.innerHTML = html
+            }
+        })
+    }
+</script>
+</body>
+</html>

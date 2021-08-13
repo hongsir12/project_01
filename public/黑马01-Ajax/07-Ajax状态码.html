@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+</head>
+<body>
+<!--在创建Ajax对象，配置Ajax对象，发送请求以及接收完服务器端响应数据，
+这个过程中的每一个步骤都会对应一个数值，这个数值就是Ajax状态码-->
+<!--0:请求未初始化(还没调用open())-->
+<!--1:请求已经建立，但是还没有发送(还没调用send())-->
+<!--2:请求已经发送-->
+<!--3:请求正在处理中，通常响应中已经有部分数据可以用了-->
+<!--4:响应已经完成，可以获取并使用服务器的响应了-->
+<script>
+    var xhr = new XMLHttpRequest()
+    console.log(xhr.readyState)  //0 已经创建了Ajax对象但还没初始化
+    xhr.open('get','http://localhost:3000/readystate')
+    console.log(xhr.readyState)  //1  已经对Ajax对象进行配置但还没发送请求
+
+    xhr.onreadystatechange = function () {  //当ajax状态码发生变化时触发
+        console.log(xhr.readyState)
+        if (xhr.readyState ===4){
+            console.log(xhr.responseText)
+        }
+    }
+    xhr.send()
+
+</script>
+</body>
+</html>

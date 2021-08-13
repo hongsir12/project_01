@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+</head>
+<body>
+<p>
+    <input type="text" id="username">
+</p>
+<p>
+    <input type="text" id="age">
+</p>
+<p>
+    <input type="button" value="提交" id="btn">
+</p>
+<script>
+    var btn = document.getElementById('btn')
+    var username = document.getElementById('username')
+    var age = document.getElementById('age')
+    btn.onclick = function (){
+        // 创建Ajax对象
+        var xhr = new XMLHttpRequest()
+        var nameValue = username.value
+        var ageValue = age.value
+        // alert(nameValue)
+        // alert(ageValue)
+        // 拼接请求参数
+        var params = 'username='+nameValue+'&age=' + ageValue
+        // 配置Ajax对象  设置请求头 post请求的参数列表在请求体
+        xhr.open('post','http://localhost:3000/post')
+        // 设置请求头参数格式的类型（post请求必须要设置）
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
+        // 设置请求体
+        xhr.send(params)
+        // 获取服务器端响应的数据
+        xhr.onload = function (){
+            console.log(xhr.responseText)
+        }
+    }
+</script>
+</body>
+</html>

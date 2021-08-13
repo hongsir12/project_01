@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+</head>
+<body>
+<!--创建普通html表单-->
+<form id="form">
+    <input type="text" name="username">
+    <input type="password" name="password">
+    <input type="button" id="btn" value="提交">
+</form>
+<script>
+    var btn = document.getElementById('btn')
+    var form = document.getElementById('form')
+    btn.onclick = function (){
+        // 将普通html表单转换为表单对象
+        var formData = new FormData(form)
+        console.log(formData.get('username'))
+        formData.set('username','itcast')
+        formData.append('username','itheima')
+
+        // 如果设置的表单属性不存在，将创建该表单属性
+        formData.set('age',100)
+        // 删除表单对象中属性的值
+        formData.delete('password')
+        // 创建ajax对象
+        var xhr = new XMLHttpRequest()
+        // 对ajax对象进行配置
+        xhr.open('post','http://localhost:3000/formData')
+        // 发送ajax请求
+        xhr.send(formData)
+        // 监听xhr对象onload事件
+        xhr.onload = function (){
+            if (xhr.status==200){
+                console.log(xhr.responseText)
+            }
+        }
+        // 创建空的表单对象
+        var f = new FormData()
+        f.append('sex','男')
+        console.log(f.get('sex'))
+    }
+</script>
+</body>
+</html>
